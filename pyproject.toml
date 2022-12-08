@@ -10,9 +10,9 @@ nivupdate = "nivupdate.main:main"
 
 [tool.poetry.dependencies]
 python = "^3.10"
-pytest = "^7.2.0"
 
 [tool.poetry.dev-dependencies]
+pytest = "^7.2.0"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
