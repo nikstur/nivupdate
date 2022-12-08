@@ -15,11 +15,14 @@
       let
         pkgs = import nixpkgs { inherit system; };
         poetry2nix' = pkgs.callPackage poetry2nix { };
+        # Wheels need to be preferred otherwise pytest cannot be used
         nivupdate = poetry2nix'.mkPoetryApplication {
           projectDir = ./.;
+          preferWheels = true;
         };
         nivupdateEnv = poetry2nix'.mkPoetryEnv {
           projectDir = ./.;
+          preferWheels = true;
         };
       in
       {
