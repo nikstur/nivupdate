@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "nivupdate"
+version = "0.1.0"
+description = "Update Niv dependencies via GitLab Pull Requests with a single command"
+license = "MIT"
+authors = ["nikstur <nikstur@outlook.com>"]
+
+[tool.poetry.scripts]
+nivupdate = "nivupdate.main:main"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+pytest = "^7.2.0"
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
