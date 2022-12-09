@@ -15,14 +15,21 @@
       let
         pkgs = import nixpkgs { inherit system; };
         poetry2nix' = pkgs.callPackage poetry2nix { };
-        # Wheels need to be preferred otherwise pytest cannot be used
-        nivupdate = poetry2nix'.mkPoetryApplication {
+        buildInputs = with pkgs; [
+          niv
+        ];
+        commonArgs = {
           projectDir = ./.;
+          # Wheels need to be preferred otherwise pytest cannot be used
           preferWheels = true;
         };
-        nivupdateEnv = poetry2nix'.mkPoetryEnv {
-          projectDir = ./.;
-          preferWheels = true;
+        nivupdate = poetry2nix'.mkPoetryApplication commonArgs // {
+          inherit buildInputs;
+        };
+        nivupdateEnv = poetry2nix'.mkPoetryEnv commonArgs // {
+          editablePackageSources = {
+            nivupdate = ./.;
+          };
         };
       in
       {
@@ -45,6 +52,9 @@
 
         devShells.default = with pkgs; mkShell {
           inputsFrom = [ nivupdateEnv.env ];
+          packages = buildInputs ++ [
+            poetry
+          ];
           inherit (self.checks.${system}.pre-commit) shellHook;
         };
       });
