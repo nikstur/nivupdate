@@ -34,6 +34,9 @@
             hooks = {
               nixpkgs-fmt.enable = true;
               statix.enable = true;
+              black.enable = true;
+              isort.enable = true;
+              flake8.enable = true;
             };
           };
         };
