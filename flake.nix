@@ -41,8 +41,7 @@
         # devShells.default = nivupdateEnv.env;
 
         devShells.default = with pkgs; mkShell {
-          inputsFrom = [ nivupdateEnv ];
-          packages = [ poetry ];
+          inputsFrom = [ nivupdateEnv.env ];
           inherit (self.checks.${system}.pre-commit) shellHook;
         };
       });
