@@ -9,12 +9,15 @@ class Dependency:
     old_revision: Optional[str]
     new_revision: Optional[str]
 
+    def __init__(self, name: str):
+        self.name = name
+
     def read_revision(self) -> str:
         sources = read_sources()
         return sources[self.name]["rev"]
 
     def update_comment(self) -> str:
-        return f"""- Updated dependency '{self.name}':
+        return f"""• Updated dependency '{self.name}':
     '{self.old_revision}'
   → '{self.new_revision}'"""
 
@@ -29,11 +32,13 @@ def main():
         dependencies = args.dependency
 
     comment_fragments = [update_dependency(dep) for dep in dependencies]
-    comment_fragments = "\n".join(comment_fragments)
-    comment = f"""source.json: update
+    comment_fragments = [i for i in comment_fragments if i != ""]
+    if comment_fragments:
+        comment_fragments = "\n".join(comment_fragments)
+        comment = f"""source.json: update
 {comment_fragments}"""
 
-    print(comment)
+        print(comment)
 
 
 def parse_args() -> argparse.Namespace:
@@ -56,8 +61,7 @@ def read_sources() -> dict[str, dict[str, str]]:
 
 
 def update_dependency(name: str) -> str:
-    dependency = Dependency()
-    dependency.name = name
+    dependency = Dependency(name)
 
     dependency.old_revision = dependency.read_revision()
 
