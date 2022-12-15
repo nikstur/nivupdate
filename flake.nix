@@ -45,6 +45,10 @@
               isort.enable = true;
               flake8.enable = true;
             };
+            excludes = [ "sources.nix" ];
+            settings = {
+              statix.ignore = [ "sources.nix" "patches" ];
+            };
           };
         };
 
