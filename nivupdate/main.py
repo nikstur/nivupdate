@@ -3,6 +3,8 @@ import json
 import subprocess
 from typing import Optional
 
+from .git import Repository
+
 
 class Dependency:
     name: str
@@ -16,7 +18,7 @@ class Dependency:
         sources = read_sources()
         return sources[self.name]["rev"]
 
-    def update_comment(self) -> str:
+    def update_message(self) -> str:
         return f"""• Updated dependency '{self.name}':
     '{self.old_revision}'
   → '{self.new_revision}'"""
@@ -31,14 +33,21 @@ def main():
     else:
         dependencies = args.dependency
 
-    comment_fragments = [update_dependency(dep) for dep in dependencies]
-    comment_fragments = [i for i in comment_fragments if i != ""]
-    if comment_fragments:
-        comment_fragments = "\n".join(comment_fragments)
-        comment = f"""source.json: update
-{comment_fragments}"""
+    repo = Repository()
 
-        print(comment)
+    message_fragments = [update_dependency(dep) for dep in dependencies]
+    message_fragments = [i for i in message_fragments if i != ""]
+    if message_fragments:
+        message_fragments = "\n".join(message_fragments)
+        message = f"""sources.json: update {",".join(dependencies)}
+
+{message_fragments}"""
+
+        if args.pr:
+            branch_name = f"nivupdate/{'-'.join(dependencies)}"
+            repo.commit_on_branch_and_push(branch_name, message)
+        else:
+            repo.commit(message)
 
 
 def parse_args() -> argparse.Namespace:
@@ -76,14 +85,14 @@ def update_dependency(name: str) -> str:
 
     dependency.new_revision = dependency.read_revision()
 
-    comment = dependency.update_comment()
+    message = dependency.update_message()
 
     if dependency.old_revision == dependency.new_revision:
         print(f"Dependency '{dependency.name}' already up to date")
         return ""
     else:
-        print(comment)
-        return comment
+        print(message)
+        return message
 
 
 if __name__ == "__main__":
