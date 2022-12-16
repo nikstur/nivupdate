@@ -15,25 +15,34 @@
       let
         pkgs = import nixpkgs { inherit system; };
         poetry2nix' = pkgs.callPackage poetry2nix { };
-        buildInputs = with pkgs; [
+        pathInputs = with pkgs; [
+          openssh # needed for git ssh dependencies
           niv
+          git
         ];
         commonArgs = {
           projectDir = ./.;
           # Wheels need to be preferred otherwise pytest cannot be used
           preferWheels = true;
         };
-        nivupdate = poetry2nix'.mkPoetryApplication commonArgs // {
-          inherit buildInputs;
-        };
+        nivupdate = poetry2nix'.mkPoetryApplication commonArgs // { };
         nivupdateEnv = poetry2nix'.mkPoetryEnv commonArgs // {
           editablePackageSources = {
             nivupdate = ./.;
           };
         };
+
+        wrappedNivupdate = pkgs.runCommand "lanzatool"
+          {
+            nativeBuildInputs = [ pkgs.makeWrapper ];
+          } ''
+          mkdir -p $out/bin
+          makeWrapper ${nivupdate}/bin/nivupdate $out/bin/nivupdate \
+            --set PATH ${pkgs.lib.makeBinPath pathInputs} \
+        '';
       in
       {
-        packages.default = nivupdate;
+        packages.default = wrappedNivupdate;
 
         checks = {
           pre-commit = pre-commit-hooks.lib.${system}.run {
@@ -52,11 +61,9 @@
           };
         };
 
-        # devShells.default = nivupdateEnv.env;
-
         devShells.default = with pkgs; mkShell {
           inputsFrom = [ nivupdateEnv.env ];
-          packages = buildInputs ++ [
+          packages = pathInputs ++ [
             poetry
           ];
           inherit (self.checks.${system}.pre-commit) shellHook;
