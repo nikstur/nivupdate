@@ -26,7 +26,7 @@ class Repository:
         self.repo.index.add("nix/sources.json")
         self.repo.index.commit(message, author=self.actor, committer=self.actor)
 
-    def commit_on_branch_and_push(self, branch: str, message: str):
+    def checkout(self, branch: str):
         try:
             new_branch = self.repo.branches[branch]  # type: ignore
         except IndexError:
@@ -35,8 +35,8 @@ class Repository:
         # This fails if the working tree is dirty.
         new_branch.checkout()
 
-        self.commit(message)
-
-        self.origin.push(refspec=f"{branch}:{branch}")
-
+    def checkout_default(self):
         self.default_branch.checkout()
+
+    def push(self, branch: str):
+        self.origin.push(refspec=f"{branch}:{branch}")
