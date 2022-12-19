@@ -16,6 +16,7 @@ def open_merge_request(url: str, source_branch: str, target_branch: str, title: 
         "source_branch": source_branch,
         "target_branch": target_branch,
         "title": title,
+        "remove_source_branch": True,
     }
 
     return requests.post(url, data=data, headers=headers)
