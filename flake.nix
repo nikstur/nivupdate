@@ -8,9 +8,10 @@
     poetry2nix.inputs.nixpkgs.follows = "nixpkgs";
     pre-commit-hooks.url = "github:cachix/pre-commit-hooks.nix";
     pre-commit-hooks.inputs.nixpkgs.follows = "nixpkgs";
+    flake-compat = { url = "github:edolstra/flake-compat"; flake = false; };
   };
 
-  outputs = { self, nixpkgs, utils, poetry2nix, pre-commit-hooks }:
+  outputs = { self, nixpkgs, utils, poetry2nix, pre-commit-hooks, ... }:
     utils.lib.eachDefaultSystem (system:
       let
         pkgs = import nixpkgs { inherit system; };
