@@ -1,4 +1,6 @@
 import argparse
+import os
+import sys
 from pathlib import Path
 
 import requests
@@ -31,7 +33,11 @@ def main():
 
             subject_line = message.splitlines()[0]
             response = gitlab.open_merge_request(
-                args.url, branch_name, repo.default_branch.name, title=subject_line
+                args.url,
+                branch_name,
+                repo.default_branch.name,
+                subject_line,
+                args.gitlab_token,
             )
             if response.status_code != requests.codes.created:
                 print(response.reason, ":", response.text)
@@ -66,6 +72,10 @@ def parse_args() -> argparse.Namespace:
 
     if (args.mr and not args.url) or (args.url and not args.mr):
         parser.error("Opening a MR requires an URL (--url).")
+
+    args.gitlab_token = os.getenv("GITLAB_TOKEN")
+    if not args.gitlab_token:
+        sys.exit("GITLAB_TOKEN environment variable is unset.")
 
     return args
 

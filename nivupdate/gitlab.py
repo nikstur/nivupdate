@@ -1,4 +1,3 @@
-import os
 from urllib.parse import urlparse
 
 import requests
@@ -6,10 +5,11 @@ import requests
 PROJECTS_PATH = "api/v4/projects"
 
 
-def open_merge_request(url: str, source_branch: str, target_branch: str, title: str):
+def open_merge_request(
+    url: str, source_branch: str, target_branch: str, title: str, token: str
+):
     url = assemble_url(url)
 
-    token = os.getenv("GITLAB_TOKEN")
     headers = {"Authorization": f"Bearer {token}"}
 
     data = {
