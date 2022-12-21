@@ -51,16 +51,20 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         prog="nivupdate",
         description="""
-        Update Niv dependencies via GitLab Pull Requests with a single command
+        Update Niv dependencies via GitLab Pull Requests using a single command
         """,
     )
 
     parser.add_argument("dependency", nargs="*")
-    parser.add_argument(
-        "--pr-url", help="URL of project to open a Pull Request (PR) in"
-    )
+    parser.add_argument("--mr", action="store_true", help="Open a Merge Request")
+    parser.add_argument("--url", help="URL of project")
 
-    return parser.parse_args()
+    args = parser.parse_args()
+
+    if (args.mr and not args.url) or (args.url and not args.mr):
+        parser.error("Opening a MR requires an URL (--url).")
+
+    return args
 
 
 if __name__ == "__main__":
