@@ -51,11 +51,11 @@
           ];
 
           text = ''
-            eval $(ssh-agent -s)
+            eval "$(ssh-agent -s)"
             echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
             mkdir -p ~/.ssh
             chmod 700 ~/.ssh
-            nivupdate $@
+            nivupdate "$@"
           '';
         };
       in
