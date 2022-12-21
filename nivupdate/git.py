@@ -12,15 +12,13 @@ class Repository:
     origin: Remote
     actor: Actor
 
-    def __init__(self):
+    def __init__(self, user: str, email: str):
         self.repo = Repo(Path.cwd())
         # This assumes the currently active branch at the time of invocation is
         # the default branch
         self.default_branch = self.repo.active_branch
         self.origin = self.repo.remotes.origin
-        # The email is empty for now. This might be replaced with a GitHub
-        # email
-        self.actor = Actor("Nivupdate Bot", "")
+        self.actor = Actor(user, email)
 
     def commit(self, message: str):
         self.repo.index.add("nix/sources.json")

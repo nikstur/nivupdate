@@ -10,18 +10,12 @@ from .git import Repository
 def main():
     args = parse_args()
 
-    if not args.dependency:
-        sources = read_sources()
-        dependencies = sources.keys()
-    else:
-        dependencies = args.dependency
+    repo = Repository(args.user, args.email)
 
-    repo = Repository()
-
-    for dependency_name in dependencies:
+    for dependency_name in args.dependencies:
         dependency = Dependency(dependency_name)
 
-        if args.pr_url:
+        if args.mr:
             branch_name = f"nivupdate/{dependency.name}"
             repo.checkout(branch_name)
 
@@ -36,7 +30,7 @@ def main():
 
             subject_line = message.splitlines()[0]
             response = gitlab.open_merge_request(
-                args.pr_url, branch_name, repo.default_branch.name, title=subject_line
+                args.url, branch_name, repo.default_branch.name, title=subject_line
             )
             if response.status_code != requests.codes.created:
                 print(response.reason, ":", response.text)
@@ -55,11 +49,18 @@ def parse_args() -> argparse.Namespace:
         """,
     )
 
-    parser.add_argument("dependency", nargs="*")
+    parser.add_argument("dependencies", nargs="*")
     parser.add_argument("--mr", action="store_true", help="Open a Merge Request")
     parser.add_argument("--url", help="URL of project")
+    parser.add_argument("--user", help="Git user name")
+    parser.add_argument("--email", help="Git user email")
 
     args = parser.parse_args()
+
+    # Update all dependencies if none are explicitly specified
+    if not args.dependencies:
+        sources = read_sources()
+        args.dependencies = sources.keys()
 
     if (args.mr and not args.url) or (args.url and not args.mr):
         parser.error("Opening a MR requires an URL (--url).")
