@@ -1,5 +1,6 @@
 import json
 import subprocess
+import sys
 
 
 class Dependency:
@@ -46,5 +47,8 @@ class Dependency:
 
 
 def read_sources() -> dict[str, dict[str, str]]:
-    with open("nix/sources.json") as f:
-        return json.load(f)
+    try:
+        with open("nix/sources.json") as f:
+            return json.load(f)
+    except FileNotFoundError:
+        sys.exit("'nix/sources.json' does not exist.")
