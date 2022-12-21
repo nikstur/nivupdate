@@ -41,33 +41,14 @@
           makeWrapper ${nivupdate}/bin/nivupdate $out/bin/nivupdate \
             --set PATH ${pkgs.lib.makeBinPath pathInputs} \
         '';
-
-        nivupdateGitlab = pkgs.writeShellApplication {
-          name = "nivupdate";
-
-          runtimeInputs = [
-            pkgs.openssh
-            wrappedNivupdate
-          ];
-
-          text = ''
-            eval "$(ssh-agent -s)"
-            echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
-            mkdir -p ~/.ssh
-            chmod 700 ~/.ssh
-            nivupdate "$@"
-          '';
-        };
       in
       {
         packages = {
           default = wrappedNivupdate;
-          gitlab = nivupdateGitlab;
         };
 
         apps = {
           default = utils.lib.mkApp { drv = wrappedNivupdate; };
-          gitlab = utils.lib.mkApp { drv = nivupdateGitlab; };
         };
 
         checks = {

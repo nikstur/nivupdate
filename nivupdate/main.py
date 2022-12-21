@@ -1,4 +1,5 @@
 import argparse
+from pathlib import Path
 
 import requests
 
@@ -10,7 +11,7 @@ from .git import Repository
 def main():
     args = parse_args()
 
-    repo = Repository(args.user, args.email)
+    repo = Repository(args.user, args.email, args.ssh_key)
 
     for dependency_name in args.dependencies:
         dependency = Dependency(dependency_name)
@@ -52,6 +53,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("dependencies", nargs="*")
     parser.add_argument("--mr", action="store_true", help="Open a Merge Request")
     parser.add_argument("--url", help="URL of project")
+    parser.add_argument("--ssh-key", type=Path, help="Path to SSH key to use")
     parser.add_argument("--user", help="Git user name")
     parser.add_argument("--email", help="Git user email")
 

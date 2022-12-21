@@ -11,14 +11,16 @@ class Repository:
     default_branch: Head
     origin: Remote
     actor: Actor
+    ssh_key: Path | None
 
-    def __init__(self, user: str, email: str):
+    def __init__(self, user: str, email: str, ssh_key: Path | None):
         self.repo = Repo(Path.cwd())
         # This assumes the currently active branch at the time of invocation is
         # the default branch
         self.default_branch = self.repo.active_branch
         self.origin = self.repo.remotes.origin
         self.actor = Actor(user, email)
+        self.ssh_key = ssh_key
 
     def commit(self, message: str):
         self.repo.index.add("nix/sources.json")
@@ -37,4 +39,12 @@ class Repository:
         self.default_branch.checkout()
 
     def push(self, branch: str):
+        if self.ssh_key:
+            ssh_cmd = f"ssh -i {self.ssh_key}"
+            with self.repo.git.custom_environment(GIT_SSH_COMMAND=ssh_cmd):
+                self._push(branch)
+        else:
+            self._push(branch)
+
+    def _push(self, branch: str):
         self.origin.push(refspec=f"{branch}:{branch}")
