@@ -40,7 +40,7 @@ def main():
                 args.gitlab_token,
             )
             if response.status_code != requests.codes.created:
-                print(response.reason, ":", response.text)
+                print(f"[{response.status_code}] ", response.reason, ":", response.text)
         else:
             message = dependency.update()
             if not message:
