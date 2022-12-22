@@ -40,6 +40,7 @@ class Repository:
 
     def push(self, branch: str):
         if self.ssh_key:
+            print(f"Using supplied SSH key: {self.ssh_key}")
             ssh_cmd = f"ssh -i {self.ssh_key}"
             with self.repo.git.custom_environment(GIT_SSH_COMMAND=ssh_cmd):
                 self._push(branch)
@@ -47,4 +48,5 @@ class Repository:
             self._push(branch)
 
     def _push(self, branch: str):
+        print(f"Pushing to: {self.origin.url}")
         self.origin.push(refspec=f"{branch}:{branch}")
