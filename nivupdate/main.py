@@ -28,8 +28,11 @@ def main():
                 continue
 
             repo.commit(message)
-            repo.push(branch_name)
-            repo.checkout_default()
+            try:
+                repo.push(branch_name)
+            finally:
+                # Always checkout default branch
+                repo.checkout_default()
 
             subject_line = message.splitlines()[0]
             response = gitlab.open_merge_request(
@@ -39,7 +42,11 @@ def main():
                 subject_line,
                 args.gitlab_token,
             )
-            if response.status_code != requests.codes.created:
+            if response.status_code == requests.codes.created:
+                data = response.json()
+                url = data["web_url"]
+                print(f"Successfully created merge request: {url}")
+            else:
                 print(f"[{response.status_code}] ", response.reason, ":", response.text)
         else:
             message = dependency.update()
