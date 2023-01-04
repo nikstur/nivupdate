@@ -12,43 +12,38 @@
   };
 
   outputs = { self, nixpkgs, utils, poetry2nix, pre-commit-hooks, ... }:
-    utils.lib.eachDefaultSystem (system:
+    {
+      overlays.default = final: prev: {
+        nivupdate = final.callPackage ./build.nix {
+          poetry2nix = final.callPackage poetry2nix { };
+        };
+      };
+    } // utils.lib.eachDefaultSystem (system:
       let
         pkgs = import nixpkgs { inherit system; };
         poetry2nix' = pkgs.callPackage poetry2nix { };
-        pathInputs = with pkgs; [
-          openssh # needed for git ssh dependencies
-          niv
-          git
-        ];
-        commonArgs = {
+
+        nivupdateEnv = poetry2nix'.mkPoetryEnv {
           projectDir = ./.;
           # Wheels need to be preferred otherwise pytest cannot be used
           preferWheels = true;
-        };
-        nivupdate = poetry2nix'.mkPoetryApplication commonArgs // { };
-        nivupdateEnv = poetry2nix'.mkPoetryEnv commonArgs // {
           editablePackageSources = {
             nivupdate = ./.;
           };
         };
 
-        wrappedNivupdate = pkgs.runCommand "nivupdate"
-          {
-            nativeBuildInputs = [ pkgs.makeWrapper ];
-          } ''
-          mkdir -p $out/bin
-          makeWrapper ${nivupdate}/bin/nivupdate $out/bin/nivupdate \
-            --set PATH ${pkgs.lib.makeBinPath pathInputs} \
-        '';
+        nivupdate = pkgs.callPackage ./build.nix {
+          poetry2nix = poetry2nix';
+        };
+
       in
       {
         packages = {
-          default = wrappedNivupdate;
+          default = nivupdate;
         };
 
         apps = {
-          default = utils.lib.mkApp { drv = wrappedNivupdate; };
+          default = utils.lib.mkApp { drv = nivupdate; };
         };
 
         checks = {
@@ -70,8 +65,11 @@
 
         devShells.default = with pkgs; mkShell {
           inputsFrom = [ nivupdateEnv.env ];
-          packages = pathInputs ++ [
+          packages = [
             poetry
+            openssh
+            niv
+            git
           ];
           inherit (self.checks.${system}.pre-commit) shellHook;
         };
