@@ -45,7 +45,7 @@ def main():
             if response.status_code == requests.codes.created:
                 data = response.json()
                 url = data["web_url"]
-                print(f"Successfully created merge request: {url}")
+                print(f"Successfully created merge request: {url}\n")
             else:
                 print(f"[{response.status_code}] ", response.reason, ":", response.text)
         else:
