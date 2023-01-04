@@ -24,7 +24,9 @@ class Repository:
 
     def commit(self, message: str):
         self.repo.index.add("nix/sources.json")
-        self.repo.index.commit(message, author=self.actor, committer=self.actor)
+        self.repo.index.commit(
+            message, author=self.actor, committer=self.actor, skip_hooks=True
+        )
 
     def checkout(self, branch: str):
         try:
