@@ -63,7 +63,7 @@
             };
             excludes = [ "sources.nix" ];
             settings = {
-              statix.ignore = [ "sources.nix" "patches" ];
+              statix.ignore = [ "sources.nix" ];
             };
           };
         };
