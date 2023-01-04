@@ -34,4 +34,18 @@ access to your repository is disabled.
 ```sh
 nix run github.com:nikstur/nivupdate -- \
   --ssh-cmd "ssh -o StrictHostKeyChecking=no -i $SSH_PRIVATE_KEY"
-``
+```
+
+## Pinning NivUpdate
+
+The recommended ways to pin nivupdate are via Niv itself or with Flakes. 
+
+### Niv 
+
+```sh
+niv init
+niv add nikstur/nivupdate
+```
+
+See `examples/niv` for an example that pulls in nivupdate via Niv and also
+defines a wrapper script to adjust nivupdate to the project's need.

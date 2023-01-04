@@ -1,0 +1,26 @@
+{
+    "nivupdate": {
+        "branch": "main",
+        "description": "Update Niv dependencies via GitLab Merge Requests using a single command",
+        "homepage": "",
+        "owner": "nikstur",
+        "repo": "nivupdate",
+        "rev": "f0e0b2d291502c5ad25ffececa78b2425d247d9e",
+        "sha256": "1a657k08m5q0dfmr8c21mz3g42m1yjc4y6a4yxkki40h922721hw",
+        "type": "tarball",
+        "url": "https://github.com/nikstur/nivupdate/archive/f0e0b2d291502c5ad25ffececa78b2425d247d9e.tar.gz",
+        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
+    },
+    "nixpkgs": {
+        "branch": "nixpkgs-unstable",
+        "description": "Nix Packages collection",
+        "homepage": "",
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "298add347c2bbce14020fcb54051f517c391196b",
+        "sha256": "0q0c6gf21rbfxvb9fvcmybvz9fxskbk324xbvqsh1dz2wzgylrja",
+        "type": "tarball",
+        "url": "https://github.com/NixOS/nixpkgs/archive/298add347c2bbce14020fcb54051f517c391196b.tar.gz",
+        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
+    }
+}
