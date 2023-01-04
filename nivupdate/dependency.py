@@ -16,9 +16,9 @@ class Dependency:
     def commit_message(self, old_revision, new_revision) -> str:
         return f"""sources.json: update {self.name}
 
-• Updated dependency '{self.name}':
-    '{old_revision}'
-  → '{new_revision}'"""
+Updated dependency '{self.name}':
+  {old_revision}'
+→ '{new_revision}'"""
 
     def update(self) -> str:
         old_revision = self.read_revision()
