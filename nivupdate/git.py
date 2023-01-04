@@ -48,4 +48,4 @@ class Repository:
             self._push(branch)
 
     def _push(self, branch: str):
-        self.origin.push(refspec=f"{branch}:{branch}")
+        self.repo.git.push("--set-upstream", self.origin.name, branch)
