@@ -18,8 +18,8 @@ nivupdate:
     - |
       nix run --refresh github.com:nikstur/nivupdate -- \
         --mr \
-	--url "$CI_PROJECT_URL" \
-	--user "NivUpdate Bot"
+        --url "$CI_PROJECT_URL" \
+        --user "NivUpdate Bot"
 ```
 
 To make sure you're running the newest version of `nivupdate` with `nix run`,
