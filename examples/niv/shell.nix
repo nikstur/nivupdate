@@ -7,7 +7,7 @@ let
 
   # You can define your own wrapper script to make some nivupdate actions even
   # simpler.
-  updateWithMR = pkgs.writeShellSApplication {
+  updateWithMR = pkgs.writeShellApplication {
     name = "update-with-mr";
     runtimeInputs = [ pkgs.nivupdate ];
     text = ''
