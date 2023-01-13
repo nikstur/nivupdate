@@ -17,7 +17,7 @@ class Dependency:
         return f"""sources.json: update {self.name}
 
 Updated dependency '{self.name}':
-  {old_revision}'
+  '{old_revision}'
 → '{new_revision}'"""
 
     def update(self) -> str:
