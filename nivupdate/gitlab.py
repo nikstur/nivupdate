@@ -20,7 +20,7 @@ def open_merge_request(
         "title": title,
         "remove_source_branch": True,
         "allow_collaboration": True,
-        "labels": ["nivupdate", "bot"],
+        "labels": "nivupdate,bot",
     }
 
     headers = {"Authorization": f"Bearer {token}"}
