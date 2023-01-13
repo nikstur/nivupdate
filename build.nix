@@ -3,6 +3,9 @@
 , niv
 , git
 , openssh # needed for git ssh dependencies
+  # nix is needed for nix-prefetch-url called by niv
+  # See https://github.com/nmattia/niv/issues/222
+, nix
 , runCommand
 , makeWrapper
 }:
@@ -17,6 +20,7 @@ let
     openssh
     niv
     git
+    nix
   ];
 in
 runCommand "nivupdate"
