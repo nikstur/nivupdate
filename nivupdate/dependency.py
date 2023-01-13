@@ -38,11 +38,8 @@ Updated dependency '{self.name}':
         message = self.commit_message(old_revision, new_revision)
 
         if old_revision == new_revision:
-            print(f"Dependency '{self.name}' already up to date")
             return ""
         else:
-            # Only print the body of the message not the subject
-            print("\n".join(message.splitlines()[2:]))
             return message
 
 

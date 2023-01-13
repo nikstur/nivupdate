@@ -3,6 +3,7 @@ import os
 import sys
 from pathlib import Path
 
+import git
 import requests
 
 from . import gitlab
@@ -24,12 +25,17 @@ def main():
 
             message = dependency.update()
             if not message:
+                print(f"Dependency '{dependency.name}' already up to date")
                 repo.checkout_default()
                 continue
 
             repo.commit(message)
             try:
                 repo.push(branch_name)
+            except git.exc.GitCommandError as e:  # type: ignore
+                print(f"Failed to push changes to branch: '{branch_name}'.")
+                print(e)
+                continue
             finally:
                 # Always checkout default branch
                 repo.checkout_default()
@@ -51,8 +57,12 @@ def main():
         else:
             message = dependency.update()
             if not message:
+                print(f"Dependency '{dependency.name}' already up to date")
                 continue
             repo.commit(message)
+
+        # Only print the body of the message not the subject
+        print("\n".join(message.splitlines()[2:]))
 
 
 def parse_args() -> argparse.Namespace:
