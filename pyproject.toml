@@ -10,7 +10,7 @@ nivupdate = "nivupdate.main:main"
 
 [tool.poetry.dependencies]
 python = "^3.10"
-gitpython = "^3.1.29"
+gitpython = "^3.1.30"
 requests = "^2.28.1"
 
 [tool.poetry.dev-dependencies]
