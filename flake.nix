@@ -4,8 +4,6 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
     utils.url = "github:numtide/flake-utils";
-    poetry2nix.url = "github:nix-community/poetry2nix";
-    poetry2nix.inputs.nixpkgs.follows = "nixpkgs";
     pre-commit-hooks.url = "github:cachix/pre-commit-hooks.nix";
     pre-commit-hooks.inputs.nixpkgs.follows = "nixpkgs";
     flake-compat = { url = "github:edolstra/flake-compat"; flake = false; };
@@ -14,16 +12,13 @@
   outputs = { self, nixpkgs, utils, poetry2nix, pre-commit-hooks, ... }:
     {
       overlays.default = final: prev: {
-        nivupdate = final.callPackage ./build.nix {
-          poetry2nix = final.callPackage poetry2nix { };
-        };
+        nivupdate = final.callPackage ./build.nix { };
       };
     } // utils.lib.eachDefaultSystem (system:
       let
         pkgs = import nixpkgs { inherit system; };
-        poetry2nix' = pkgs.callPackage poetry2nix { };
 
-        nivupdateEnv = poetry2nix'.mkPoetryEnv {
+        nivupdateEnv = pkgs.poetry2nix.mkPoetryEnv {
           projectDir = ./.;
           # Wheels need to be preferred otherwise pytest cannot be used
           preferWheels = true;
@@ -32,9 +27,7 @@
           };
         };
 
-        nivupdate = pkgs.callPackage ./build.nix {
-          poetry2nix = poetry2nix';
-        };
+        nivupdate = pkgs.callPackage ./build.nix { };
 
       in
       {
