@@ -1,21 +1,15 @@
 { lib
-, poetry2nix
+, mkPoetryApplication
+, makeBinaryWrapper
 , niv
 , git
-, openssh # needed for git ssh dependencies
+  # openssh is needed for git ssh dependencies
+, openssh
   # nix is needed for nix-prefetch-url called by niv
   # See https://github.com/nmattia/niv/issues/222
 , nix
-, runCommand
-, makeWrapper
 }:
 let
-  nivupdate = poetry2nix.mkPoetryApplication {
-    projectDir = ./.;
-    # Wheels need to be preferred otherwise pytest cannot be used
-    preferWheels = true;
-  };
-
   pathInputs = [
     openssh
     niv
@@ -23,11 +17,16 @@ let
     nix
   ];
 in
-runCommand "nivupdate"
-{
-  nativeBuildInputs = [ makeWrapper ];
-} ''
-  mkdir -p $out/bin
-  makeWrapper ${nivupdate}/bin/nivupdate $out/bin/nivupdate \
-    --set PATH ${lib.makeBinPath pathInputs} \
-''
+mkPoetryApplication {
+
+  projectDir = ./.;
+
+  preferWheels = true;
+
+  nativeBuildInputs = [ makeBinaryWrapper ];
+
+  postFixup = ''
+    wrapProgram $out/bin/nivupdate --set PATH ${ lib.makeBinPath pathInputs }
+  '';
+
+}
