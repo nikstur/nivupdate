@@ -13,7 +13,7 @@ class Dependency:
         sources = read_sources()
         return sources[self.name]["rev"]
 
-    def commit_message(self, old_revision, new_revision) -> str:
+    def commit_message(self, old_revision: str, new_revision: str) -> str:
         return f"""sources.json: update {self.name}
 
 Updated dependency '{self.name}':

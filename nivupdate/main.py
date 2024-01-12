@@ -11,7 +11,7 @@ from .dependency import Dependency, read_sources
 from .git import Repository
 
 
-def main():
+def main() -> None:
     args = parse_args()
 
     repo = Repository(args.user, args.email, args.ssh_cmd)
