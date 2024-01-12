@@ -1,0 +1,17 @@
+on:
+  push:
+    branches: [ main ]
+    pull_request:
+    merge_group:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+     deployments: write
+    steps:
+    - uses: actions/checkout@v4
+    - uses: cachix/install-nix-action@v23
+    - uses: DeterminateSystems/magic-nix-cache-action@v2
+      with:
+        diagnostic-endpoint: "" 
+    - run: nix flake check
