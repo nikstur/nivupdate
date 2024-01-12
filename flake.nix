@@ -37,6 +37,7 @@
   outputs = inputs@{ self, flake-parts, ... }: flake-parts.lib.mkFlake { inherit inputs; } (_: {
 
     imports = [
+      inputs.flake-parts.flakeModules.easyOverlay
       inputs.pre-commit-hooks-nix.flakeModule
     ];
 
@@ -60,6 +61,10 @@
         packages = {
           inherit nivupdate;
           default = nivupdate;
+        };
+
+        overlayAttrs = {
+          inherit nivupdate;
         };
 
         pre-commit = {
