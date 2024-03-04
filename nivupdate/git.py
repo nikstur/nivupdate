@@ -48,4 +48,4 @@ class Repository:
             self._push(branch)
 
     def _push(self, branch: str) -> None:
-        self.repo.git.push("--set-upstream", self.origin.name, branch)
+        self.repo.git.push("--force", "--set-upstream", self.origin.name, branch)
