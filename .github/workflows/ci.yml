@@ -10,7 +10,7 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - uses: cachix/install-nix-action@v27
-    - uses: DeterminateSystems/magic-nix-cache-action@v6
+    - uses: DeterminateSystems/magic-nix-cache-action@v7
       with:
         diagnostic-endpoint: "" 
     - run: nix flake check
